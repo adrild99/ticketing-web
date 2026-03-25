@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticketing - Catálogo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f0f;
+            color: #f0f0f0;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1a1a1a;
+            padding: 20px 40px;
+            border-bottom: 2px solid #e63946;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: #e63946;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .catalogo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #2a2a2a;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #e63946;
+        }
+
+        .card .tipo {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e63946;
+            margin-bottom: 8px;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+
+        .card .lugar {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 16px;
+        }
+
+        .sesion {
+            background: #111;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sesion .aforo {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .sesion .aforo.bajo {
+            color: #ff9800;
+        }
+
+        .sesion .aforo.agotado {
+            color: #e63946;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🎟 Ticketing</h1>
+</header>
+
+<div class="catalogo">
+    <div class="card" th:each="evento : ${catalogo}">
+        <div class="tipo" th:text="${evento.categoria}"></div>
+        <h2 th:text="${evento.nombre}"></h2>
+        <p class="lugar" th:text="${evento.lugar}"></p>
+
+        <div th:each="sesion : ${evento.sesiones}" class="sesion">
+            <span th:text="${sesion.fechaHora}"></span>
+            <span class="aforo" th:text="${sesion.aforoDisponible} + ' entradas'"></span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
