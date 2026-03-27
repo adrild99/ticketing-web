@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Comprar - Ticketing</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+
+    <header>
+        <a href="/" class="nav-brand">🎟 Ticketing</a>
+        <nav class="nav-links">
+            <a href="/" class="nav-link">Eventos</a>
+            <a href="/proximamente" class="nav-link">Próximamente</a>
+            <a href="/faq" class="nav-link">FAQ</a>
+        </nav>
+    </header>
+
+    <div class="detalle-container">
+
+        <a th:href="'/evento/' + ${evento.id}" class="volver">← Volver al evento</a>
+
+        <div class="detalle-header">
+            <div class="tipo" th:text="${evento.categoria}" th:classappend="${evento.categoria}"></div>
+            <h1 th:text="${evento.nombre}"></h1>
+            <p class="lugar">📍 <span th:text="${evento.lugar}"></span></p>
+            <p class="lugar">📅 <span th:text="${#temporals.format(sesion.fechaHora, 'dd MMM yyyy · HH:mm')}"></span>
+            </p>
+        </div>
+
+        <!-- Error si lo hay -->
+        <div class="error-msg" th:if="${error}" th:text="${error}"></div>
+
+        <form action="/comprar/procesar" method="post" class="form-compra">
+            <input type="hidden" name="idEvento" th:value="${evento.id}">
+            <input type="hidden" name="idSesion" th:value="${sesion.idSesion}">
+
+            <div class="form-grupo">
+                <label>Cantidad de entradas</label>
+                <input type="number" name="cantidad" min="1" max="10" value="1" required>
+            </div>
+
+            <div class="form-grupo">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="tu@email.com" required>
+            </div>
+
+            <div class="form-grupo">
+                <label>Método de pago</label>
+                <div class="metodos-pago">
+                    <label class="metodo">
+                        <input type="radio" name="metodoPago" value="bizum" checked onchange="cambiarPago('bizum')">
+                        <span>Bizum</span>
+                    </label>
+                    <label class="metodo">
+                        <input type="radio" name="metodoPago" value="tarjeta" onchange="cambiarPago('tarjeta')">
+                        <span>Tarjeta</span>
+                    </label>
+                    <label class="metodo">
+                        <input type="radio" name="metodoPago" value="paypal" onchange="cambiarPago('paypal')">
+                        <span>PayPal</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="campos-bizum" class="form-grupo">
+                <label>Teléfono</label>
+                <input type="text" name="telefono" id="telefono" placeholder="612345678" maxlength="9">
+                <span class="campo-error" id="error-telefono"></span>
+            </div>
+
+            <div id="campos-tarjeta" class="form-grupo" style="display:none">
+                <label>Número de tarjeta</label>
+                <input type="text" name="numTarjeta" id="numTarjeta" placeholder="1234567890123456" maxlength="16">
+                <span class="campo-error" id="error-tarjeta"></span>
+
+                <label style="margin-top:12px">Titular</label>
+                <input type="text" name="titular" id="titular" placeholder="Nombre Apellido">
+                <span class="campo-error" id="error-titular"></span>
+
+                <label style="margin-top:12px">Caducidad</label>
+                <input type="text" name="caducidad" id="caducidad" placeholder="MM/YY" maxlength="5">
+                <span class="campo-error" id="error-caducidad"></span>
+
+                <label style="margin-top:12px">CVV</label>
+                <input type="text" name="cvv" id="cvv" placeholder="123" maxlength="3">
+                <span class="campo-error" id="error-cvv"></span>
+            </div>
+
+            <div id="campos-paypal" class="form-grupo" style="display:none">
+                <label>Email de PayPal</label>
+                <input type="text" name="emailPaypal" id="emailPaypal" placeholder="tu@paypal.com">
+                <span class="campo-error" id="error-paypal"></span>
+            </div>
+
+            <input type="hidden" name="datosPago" id="datosPago">
+
+            <button type="submit" class="btn-comprar">Confirmar compra</button>
+        </form>
+
+    </div>
+    <script>
+        function cambiarPago(metodo) {
+            document.getElementById('campos-bizum').style.display = metodo === 'bizum' ? 'flex' : 'none';
+            document.getElementById('campos-tarjeta').style.display = metodo === 'tarjeta' ? 'flex' : 'none';
+            document.getElementById('campos-paypal').style.display = metodo === 'paypal' ? 'flex' : 'none';
+        }
+
+        // Validaciones (mismas reglas que Validador.java)
+        function esTelefonoValido(t) { return /^[679][0-9]{8}$/.test(t); }
+        function esEmailValido(e) { return /^[\w\-.]+@([\w-]+\.)+[a-zA-Z]{2,4}$/.test(e); }
+        function esTarjetaValida(t) { return /^[0-9]{16}$/.test(t); }
+        function esTitularValido(n) { return /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]{3,50}$/.test(n); }
+        function esCvvValido(c) { return /^[0-9]{3}$/.test(c); }
+        function esCaducidadValida(f) {
+            if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(f)) return false;
+            const [mes, anio] = f.split('/');
+            const caducidad = new Date(2000 + parseInt(anio), parseInt(mes) - 1);
+            return caducidad >= new Date();
+        }
+
+        function mostrarError(id, msg) {
+            document.getElementById(id).textContent = msg;
+        }
+        function limpiarError(id) {
+            document.getElementById(id).textContent = '';
+        }
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let valido = true;
+
+            const metodo = document.querySelector('input[name="metodoPago"]:checked').value;
+
+            if (metodo === 'bizum') {
+                const tel = document.getElementById('telefono').value;
+                if (!esTelefonoValido(tel)) {
+                    mostrarError('error-telefono', 'Debe tener 9 dígitos y empezar por 6, 7 o 9');
+                    valido = false;
+                } else {
+                    limpiarError('error-telefono');
+                    document.getElementById('datosPago').value = tel;
+                }
+
+            } else if (metodo === 'tarjeta') {
+                const num = document.getElementById('numTarjeta').value;
+                const titular = document.getElementById('titular').value;
+                const cad = document.getElementById('caducidad').value;
+                const cvv = document.getElementById('cvv').value;
+
+                if (!esTarjetaValida(num)) {
+                    mostrarError('error-tarjeta', 'Debe tener exactamente 16 dígitos'); valido = false;
+                } else limpiarError('error-tarjeta');
+
+                if (!esTitularValido(titular)) {
+                    mostrarError('error-titular', 'Solo letras, mínimo 3 caracteres'); valido = false;
+                } else limpiarError('error-titular');
+
+                if (!esCaducidadValida(cad)) {
+                    mostrarError('error-caducidad', 'Formato MM/YY y no caducada'); valido = false;
+                } else limpiarError('error-caducidad');
+
+                if (!esCvvValido(cvv)) {
+                    mostrarError('error-cvv', 'Debe tener 3 dígitos'); valido = false;
+                } else limpiarError('error-cvv');
+
+                if (valido) document.getElementById('datosPago').value = num;
+
+            } else if (metodo === 'paypal') {
+                const email = document.getElementById('emailPaypal').value;
+                if (!esEmailValido(email)) {
+                    mostrarError('error-paypal', 'Formato de email incorrecto'); valido = false;
+                } else {
+                    limpiarError('error-paypal');
+                    document.getElementById('datosPago').value = email;
+                }
+            }
+
+            if (valido) this.submit();
+        });
+
+    </script>
+
+</body>
+
+</html>

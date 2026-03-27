@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${evento.nombre} + ' - Ticketing'"></title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<header>
+    <a href="/" class="nav-brand">🎟 Ticketing</a>
+    <nav class="nav-links">
+        <a href="/" class="nav-link activo">Eventos</a>
+        <a href="/proximamente" class="nav-link">Próximamente</a>
+        <a href="/faq" class="nav-link">FAQ</a>
+    </nav>
+</header>
+
+<div class="detalle-container">
+
+    <a href="/" class="volver">← Volver al catálogo</a>
+
+    <div class="detalle-header">
+        <div class="tipo" th:text="${evento.categoria}" th:classappend="${evento.categoria}"></div>
+        <h1 th:text="${evento.nombre}"></h1>
+        <p class="lugar">📍 <span th:text="${evento.lugar}"></span></p>
+    </div>
+
+    <h2 class="sesiones-titulo">Sesiones disponibles</h2>
+
+    <div class="sesiones-grid">
+        <div class="sesion-card" th:each="sesion : ${evento.sesiones}">
+            <div class="sesion-fecha" th:text="${#temporals.format(sesion.fechaHora, 'dd MMM yyyy · HH:mm')}"></div>
+            <div class="sesion-zona" th:text="'Zona: ' + ${sesion.nombreZona}"></div>
+            <div class="sesion-aforo"
+                th:text="${sesion.aforoDisponible} + ' entradas disponibles'"
+                th:classappend="${sesion.aforoDisponible == 0 ? 'agotado' : (sesion.aforoDisponible < 20 ? 'bajo' : '')}">
+            </div>
+            <a th:href="'/comprar/' + ${evento.id} + '/' + ${sesion.idSesion}" 
+               class="btn-comprar"
+               th:classappend="${sesion.aforoDisponible == 0 ? ' deshabilitado' : ''}">
+                Comprar entradas
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

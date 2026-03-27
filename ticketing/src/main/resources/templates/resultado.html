@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Compra confirmada - Ticketing</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<header>
+    <a href="/" class="nav-brand">🎟 Ticketing</a>
+    <nav class="nav-links">
+        <a href="/" class="nav-link">Eventos</a>
+        <a href="/proximamente" class="nav-link">Próximamente</a>
+        <a href="/faq" class="nav-link">FAQ</a>
+    </nav>
+</header>
+
+<div class="detalle-container resultado">
+    <div class="resultado-icono">✅</div>
+    <h1>¡Compra completada!</h1>
+    <p class="lugar" th:text="'Referencia: ' + ${pedido.idPedido}"></p>
+
+    <div class="resumen-pedido">
+        <div class="resumen-fila">
+            <span>Evento</span>
+            <span th:text="${pedido.entradas[0].idEvento}"></span>
+        </div>
+        <div class="resumen-fila">
+            <span>Entradas</span>
+            <span th:text="${pedido.entradas.size()}"></span>
+        </div>
+        <div class="resumen-fila total">
+            <span>Total</span>
+            <span th:text="${pedido.total} + ' €'"></span>
+        </div>
+    </div>
+
+    <a href="/" class="btn-comprar" style="display:inline-block; margin-top: 30px;">
+        Volver al catálogo
+    </a>
+</div>
+
+</body>
+</html>
