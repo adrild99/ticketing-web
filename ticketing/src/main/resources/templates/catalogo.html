@@ -1,28 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Ticketing - Catálogo</title>
     <link rel="stylesheet" th:href="@{/style.css}">
-
 </head>
+
 <body>
 
-<header>
-    <h1>🎟 Ticketing</h1>
-</header>
+    <header>
+        <a href="/" class="nav-brand">🎟 Ticketing</a>
+        <nav class="nav-links">
+            <a href="/" class="nav-link activo">Eventos</a>
+            <a href="/proximamente" class="nav-link">Próximamente</a>
+            <a href="/faq" class="nav-link">FAQ</a>
+        </nav>
+    </header>
 
-<div class="catalogo">
-    <div class="card" th:each="evento : ${catalogo}">
-        <div class="tipo" th:text="${evento.categoria}"></div>
-        <h2 th:text="${evento.nombre}"></h2>
-        <p class="lugar" th:text="${evento.lugar}"></p>
+    <div class="barra-superior">
+        <div class="filtros">
+            <button class="filtro activo" onclick="filtrar('todos')">Todos</button>
+            <button class="filtro" onclick="filtrar('CONCIERTO')">Conciertos</button>
+            <button class="filtro" onclick="filtrar('TEATRO')">Teatro</button>
+            <button class="filtro" onclick="filtrar('CINE')">Cine</button>
+        </div>
 
-        <div th:each="sesion : ${evento.sesiones}" class="sesion">
-            <span th:text="${sesion.fechaHora}"></span>
-            <span class="aforo" th:text="${sesion.aforoDisponible} + ' entradas'"></span>
+        <div class="buscador">
+            <span class="lupa">🔍</span>
+            <input type="text" id="inputBuscar" placeholder="Buscar evento o lugar..." oninput="buscar()">
         </div>
     </div>
-</div>
+
+
+    <div class="catalogo">
+        <div class="card" th:each="evento : ${catalogo}" th:attr="data-categoria=${evento.categoria}">
+            <div class="tipo" th:text="${evento.categoria}"></div>
+            <h2 th:text="${evento.nombre}"></h2>
+            <p class="lugar" th:text="${evento.lugar}"></p>
+
+            <div th:each="sesion : ${evento.sesiones}" class="sesion">
+                <span th:text="${#temporals.format(sesion.fechaHora, 'dd MMM yyyy · HH:mm')}"></span>
+                <span class="aforo" th:text="${sesion.aforoDisponible} + ' entradas'"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let categoriaActiva = 'todos';
+
+        function filtrar(categoria) {
+            categoriaActiva = categoria;
+            document.querySelectorAll('.filtro').forEach(btn => btn.classList.remove('activo'));
+            event.target.classList.add('activo');
+            aplicarFiltros();
+        }
+
+        function buscar() {
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const texto = document.getElementById('inputBuscar').value.toLowerCase();
+
+            document.querySelectorAll('.card').forEach(card => {
+                const cat = card.getAttribute('data-categoria');
+                const nombre = card.querySelector('h2').textContent.toLowerCase();
+                const lugar = card.querySelector('.lugar').textContent.toLowerCase();
+
+                const coincideCategoria = (categoriaActiva === 'todos' || cat === categoriaActiva);
+                const coincideTexto = nombre.includes(texto) || lugar.includes(texto);
+
+                card.style.display = (coincideCategoria && coincideTexto) ? 'block' : 'none';
+            });
+        }
+    </script>
 
 </body>
+
 </html>

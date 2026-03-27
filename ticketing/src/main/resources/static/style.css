@@ -1,86 +1,200 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f0f0f;
-            color: #f0f0f0;
-            min-height: 100vh;
-        }
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f0f0f;
+    color: #f0f0f0;
+    min-height: 100vh;
+}
 
-        header {
-            background: #1a1a1a;
-            padding: 20px 40px;
-            border-bottom: 2px solid #e63946;
-        }
+header {
+    background: #1a1a1a;
+    padding: 0 40px;
+    border-bottom: 2px solid #e63946;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        header h1 {
-            font-size: 1.8rem;
-            color: #e63946;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+header h1 {
+    font-size: 1.8rem;
+    color: #e63946;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
 
-        .catalogo {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-            padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+.catalogo {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
 
-        .card {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid #2a2a2a;
-            transition: transform 0.2s, border-color 0.2s;
-        }
+.card {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #2a2a2a;
+    transition: transform 0.2s, border-color 0.2s;
+}
 
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: #e63946;
-        }
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #e63946;
+}
 
-        .card .tipo {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #e63946;
-            margin-bottom: 8px;
-        }
+.card .tipo {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #e63946;
+    margin-bottom: 8px;
+}
 
-        .card h2 {
-            font-size: 1.2rem;
-            margin-bottom: 6px;
-        }
+.card h2 {
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+}
 
-        .card .lugar {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 16px;
-        }
+.card .lugar {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 16px;
+}
 
-        .sesion {
-            background: #111;
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-top: 8px;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.sesion {
+    background: #111;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .sesion .aforo {
-            color: #4caf50;
-            font-weight: bold;
-        }
+.sesion .aforo {
+    color: #4caf50;
+    font-weight: bold;
+}
 
-        .sesion .aforo.bajo {
-            color: #ff9800;
-        }
+.sesion .aforo.bajo {
+    color: #ff9800;
+}
 
-        .sesion .aforo.agotado {
-            color: #e63946;
-        }
+.sesion .aforo.agotado {
+    color: #e63946;
+}
+
+.filtros {
+    display: flex;
+    gap: 12px;
+    padding: 30px 40px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.filtro {
+    background: #1a1a1a;
+    color: #f0f0f0;
+    border: 1px solid #2a2a2a;
+    padding: 10px 24px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.filtro:hover {
+    border-color: #e63946;
+    color: #e63946;
+}
+
+.filtro.activo {
+    background: #e63946;
+    border-color: #e63946;
+    color: white;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 40px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+
+.buscador {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 999px;
+    padding: 10px 80px;
+    gap: 10px;
+    transition: border-color 0.2s;
+    margin-top: 30px;
+}
+
+.buscador:focus-within {
+    border-color: #e63946;
+}
+
+.buscador input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #f0f0f0;
+    font-size: 0.9rem;
+    width: 220px;
+}
+
+.buscador input::placeholder {
+    color: #555;
+}
+
+.nav-brand {
+    font-size: 1.4rem;
+    color: #e63946;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: none;
+
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-link {
+    color: #888;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    color: #f0f0f0;
+    background: #2a2a2a;
+}
+
+.nav-link.activo {
+    color: #e63946;
+    background: #2a1a1a;
+}
