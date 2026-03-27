@@ -198,3 +198,25 @@ header h1 {
     color: #e63946;
     background: #2a1a1a;
 }
+
+/* Badges por categoría */
+.tipo.CONCIERTO { color: #f4a261; border-color: #f4a261; }
+.tipo.TEATRO    { color: #4cc9f0; border-color: #4cc9f0; }
+.tipo.CINE      { color: #1bbe1b; border-color: #1bbe1b; }
+
+.tipo {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid;
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 10px;
+}
+
+/* Indicador de aforo */
+.aforo        { color: #4caf50; font-weight: bold; }
+.aforo.bajo   { color: #ff9800; }
+.aforo.agotado { color: #e63946; }

@@ -34,13 +34,15 @@
 
     <div class="catalogo">
         <div class="card" th:each="evento : ${catalogo}" th:attr="data-categoria=${evento.categoria}">
-            <div class="tipo" th:text="${evento.categoria}"></div>
+            <div class="tipo" th:text="${evento.categoria}" th:classappend="${evento.categoria}"></div>
             <h2 th:text="${evento.nombre}"></h2>
             <p class="lugar" th:text="${evento.lugar}"></p>
 
             <div th:each="sesion : ${evento.sesiones}" class="sesion">
                 <span th:text="${#temporals.format(sesion.fechaHora, 'dd MMM yyyy · HH:mm')}"></span>
-                <span class="aforo" th:text="${sesion.aforoDisponible} + ' entradas'"></span>
+                <span class="aforo" th:text="${sesion.aforoDisponible} + ' entradas'"
+                    th:classappend="${sesion.aforoDisponible == 0 ? 'agotado' : (sesion.aforoDisponible < 20 ? 'bajo' : '')}">
+                </span>
             </div>
         </div>
     </div>
